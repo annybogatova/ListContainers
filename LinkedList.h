@@ -20,7 +20,7 @@ public:
 
     using iterator = Iterator<T>;
     iterator begin(){return Iterator(&front);}
-    Iterator<Node<int> *> end(){return Iterator(&back);}
+    iterator end(){return Iterator(&back);}
 
     LinkedList() : front(nullptr), Size(0){};
     ~LinkedList(){
@@ -67,10 +67,6 @@ public:
                 newNode->setNext(front);
                 front->setPrevious(newNode);
                 front = newNode;
-//            } else if (Size - position == 1) {
-//
-//                back = newNode;
-//
             } else if (Size >= position - 1) {
                 Node<T> *current = front;
                 while (counter != position) {
@@ -95,6 +91,10 @@ public:
         catch (const std::exception &err){
             std::cerr << err.what() << std::endl;
         }
+    }
+
+    void insert(iterator position, const T &data) override{
+
     }
 
     void erase(std::size_t position) override {
@@ -129,6 +129,10 @@ public:
         catch (const std::exception &err){
             std::cerr << err.what() << std::endl;
         }
+    }
+
+    void erase(iterator position) override {
+
     }
 
     std::size_t size() override {

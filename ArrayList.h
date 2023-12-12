@@ -48,7 +48,6 @@ public:
 
     ~ArrayList(){
         clear();
-        free(Data); // ?is it same to delete[]?
     }
 
     constexpr void push_back(const T &data) override {
@@ -72,7 +71,22 @@ public:
         }
     }
 
-    constexpr void erase(size_t position) override {  //it should work with iterators
+    void insert(iterator position, const T &data) override{
+        size_t pos = std::distance(begin(), position);
+        if(pos >= 0 && pos < Size) {
+            if (Size >= Capacity) {
+                reserve(Size * 2);
+            }
+            for (size_t i = Size; i > pos; i--) {
+                Data[i] = Data[i - 1];
+            }
+
+            Data[pos] = data;
+            Size++;
+        }
+    }
+
+    constexpr void erase(size_t position) override {
         if(position >= 0 && position < Size) {
             for (size_t i = position; i < Size; i++) {
                 Data[i] = Data[i + 1];
@@ -81,13 +95,29 @@ public:
         }
     }
 
+    constexpr void erase(iterator position) override{
+        size_t pos = std::distance(begin(), position);
+        if(pos >= 0 && pos < Size) {
+            for (size_t i = pos; i < Size; i++) {
+                Data[i] = Data[i + 1];
+            }
+            Size--;
+        }
+    }
+
+
     constexpr size_t size() override {
         return Size;
     }
 
     constexpr void reserve(size_t new_cap){
-        realloc(Data, new_cap);
+        T *NewData = new T[new_cap];
+        for(size_t i = 0; i < Size; ++i){
+            NewData[i] = Data[i];
+        }
+        delete[] Data;
         Capacity = new_cap;
+        Data = NewData;
     }
 
     [[nodiscard]] constexpr bool empty() const{
